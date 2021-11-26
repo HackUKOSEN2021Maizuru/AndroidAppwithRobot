@@ -16,6 +16,11 @@
         android:name="com.example.koroboandroidapp.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/navigation_time"
+        android:name="com.example.koroboandroidapp.ui.time.TimeFragment"
+        android:label="@string/title_time"
+        tools:layout="@layout/fragment_time" />
 
 
 </navigation>
