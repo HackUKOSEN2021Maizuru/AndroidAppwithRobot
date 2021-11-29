@@ -1,4 +1,4 @@
-package com.example.koroboandroidapp.ui.time;
+package com.example.koroboandroidapp;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -17,10 +17,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import android.os.Handler;
 import android.os.Looper;
-import com.example.koroboandroidapp.R;
-//import com.example.koroboandroidapp.ui.dashboard.DashboardViewModel;
 
-public class TimeFragment extends Fragment {
+
+public class Fragment01 extends Fragment {
+
     private int cnt = 0;
     private Timer timer;
     private CountUpTimerTask timerTask;
@@ -30,9 +30,9 @@ public class TimeFragment extends Fragment {
     private TextView timerText;
     private long count, delay, period;
     private String zero;
-    static TimeFragment newInstance(int count){
+    static Fragment01 newInstance(int count){
         // Fragemnt01 インスタンス生成
-        TimeFragment fragment01 = new TimeFragment();
+        Fragment01 fragment01 = new Fragment01();
 
         // Bundle にパラメータを設定
         Bundle args = new Bundle();
@@ -47,7 +47,7 @@ public class TimeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_time,
+        return inflater.inflate(R.layout.fragment01,
                 container, false);
     }
 
@@ -91,7 +91,7 @@ public class TimeFragment extends Fragment {
                 timer = new Timer();
 
                 // TimerTask インスタンスを生成
-                timerTask = new TimeFragment.CountUpTimerTask();
+                timerTask = new CountUpTimerTask();
 
                 // スケジュールを設定 100msec
                 // public void schedule (TimerTask task, long delay, long period)
@@ -163,4 +163,6 @@ public class TimeFragment extends Fragment {
             });
         }
     }
+
+
 }
