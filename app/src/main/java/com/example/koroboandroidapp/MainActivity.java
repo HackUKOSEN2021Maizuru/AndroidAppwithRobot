@@ -12,7 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.widget.Button;
-/*
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
     }
 
-}*/
-
+}
+/*
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -54,3 +54,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+
+ */

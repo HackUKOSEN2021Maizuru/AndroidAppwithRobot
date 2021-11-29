@@ -74,10 +74,10 @@ public class TimeFragment extends Fragment {
         // "00:00.0"
         zero = getString(R.string.zero);
 
-        timerText = getActivity().findViewById(R.id.textView);
+        timerText = getActivity().findViewById(R.id.TimeText);
         timerText.setText(zero);
 
-        Button startButton = getActivity().findViewById(R.id.start_button);
+        Button startButton = getActivity().findViewById(R.id.StartButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +105,7 @@ public class TimeFragment extends Fragment {
         });
 
         // タイマー終了
-        Button stopButton = getActivity().findViewById(R.id.stop_button);
+        Button stopButton = getActivity().findViewById(R.id.StopButton);
         stopButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -115,28 +115,15 @@ public class TimeFragment extends Fragment {
                     timer.cancel();
                     timer = null;
                     timerText.setText(zero);
+                    count = 0;
                 }
             }
         });
 
-        Button button01 = view.findViewById(R.id.button_01);
-        button01.setOnClickListener( v -> {
-            FragmentManager fragmentManager = getFragmentManager();
 
-            if(fragmentManager != null){
-                FragmentTransaction fragmentTransaction =
-                        fragmentManager.beginTransaction();
-                // BackStackを設定
-                fragmentTransaction.addToBackStack(null);
-
-                fragmentTransaction.replace(R.id.container,
-                        Fragment02.newInstance(cnt));
-                fragmentTransaction.commit();
-            }
-
-        });
 
         // BackStackで１つ戻す
+        /*
         Button pop01 = view.findViewById(R.id.pop_01);
         pop01.setOnClickListener( v -> {
             FragmentManager fragmentManager = getFragmentManager();
@@ -144,6 +131,7 @@ public class TimeFragment extends Fragment {
                 fragmentManager.popBackStack();
             }
         });
+        */
     }
     class CountUpTimerTask extends TimerTask {
         @Override
@@ -151,10 +139,10 @@ public class TimeFragment extends Fragment {
             // handlerを使って処理をキューイングする
             handler.post(new Runnable() {
                 public void run() {
-                    cnt++;
-                    long mm = cnt*100 / 1000 / 60;
-                    long ss = cnt*100 / 1000 % 60;
-                    long ms = (cnt*100 - ss * 1000 - mm * 1000 * 60)/100;
+                    count++;
+                    long mm = count*100 / 1000 / 60;
+                    long ss = count*100 / 1000 % 60;
+                    long ms = (count*100 - ss * 1000 - mm * 1000 * 60)/100;
                     // 桁数を合わせるために02d(2桁)を設定
                     timerText.setText(
                             String.format(Locale.US, "%1$02d:%2$02d.%3$01d", mm, ss, ms));
