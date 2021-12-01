@@ -28,6 +28,7 @@ public class TimeFragment extends Fragment {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private TextView timerText;
+    private TextView log;
     private long count, delay, period;
     private String zero;
     static TimeFragment newInstance(int count){
@@ -76,6 +77,9 @@ public class TimeFragment extends Fragment {
 
         timerText = getActivity().findViewById(R.id.TimeText);
         timerText.setText(zero);
+
+        log = getActivity().findViewById(R.id.log);
+        log.setText("fas");
 
         Button startButton = getActivity().findViewById(R.id.StartButton);
         startButton.setOnClickListener(new View.OnClickListener() {
