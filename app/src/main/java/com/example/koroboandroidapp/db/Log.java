@@ -9,11 +9,11 @@ public class Log {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(name = "access_time")
-    private String logTime;
+    @ColumnInfo(name = "log")
+    private String log;
 
-    public Log(String logTime) {
-        this.logTime = logTime;
+    public Log(String log) {
+        this.log = log;
     }
 
     public void setId(int id) {
@@ -24,12 +24,12 @@ public class Log {
         return id;
     }
 
-    public void setAccessTime(String accessTime) {
-        this.logTime = accessTime;
+    public void setLog(String log) {
+        this.log = log;
     }
 
-    public String getAccessTime() {
-        return logTime;
+    public String getLog() {
+        return log;
     }
 
 }

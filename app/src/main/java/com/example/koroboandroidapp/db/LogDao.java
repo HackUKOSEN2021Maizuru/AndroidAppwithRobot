@@ -7,6 +7,12 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.ColumnInfo;
+
+import androidx.room.Entity;
+
+import androidx.room.PrimaryKey;
+import androidx.room.OnConflictStrategy;
 
 @Dao
 public interface LogDao {
@@ -19,7 +25,7 @@ public interface LogDao {
     @Insert
     void insertAll(Log... log);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Log log);
 
     @Delete
