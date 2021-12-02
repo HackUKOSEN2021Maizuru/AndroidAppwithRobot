@@ -4,6 +4,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.annotation.NonNull;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +14,41 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.app.Activity;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.os.Handler;
 import android.os.Looper;
 import com.example.koroboandroidapp.R;
+import com.example.koroboandroidapp.db.AppDatabase;
+import com.example.koroboandroidapp.db.AppDatabaseSingleton;
+import com.example.koroboandroidapp.db.LogDao;
+import com.example.koroboandroidapp.db.Log;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
+import java.security.Timestamp;
+import java.util.ArrayList;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+
+import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 //import com.example.koroboandroidapp.ui.dashboard.DashboardViewModel;
+
+
 
 public class TimeFragment extends Fragment {
     private int cnt = 0;
@@ -28,8 +58,13 @@ public class TimeFragment extends Fragment {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private TextView timerText;
+    private TextView logText;
+    private TextView log;
     private long count, delay, period;
     private String zero;
+    private WeakReference<Activity> weakActivity;
+    private AppDatabase db;
+
     static TimeFragment newInstance(int count){
         // Fragemnt01 インスタンス生成
         TimeFragment fragment01 = new TimeFragment();
@@ -52,12 +87,19 @@ public class TimeFragment extends Fragment {
     }
 
 
+    public String getTime(long time){
+        long mm = count*100 / 1000 / 60;
+        long ss = count*100 / 1000 % 60;
+        long ms = (count*100 - ss * 1000 - mm * 1000 * 60)/100;
 
+        return String.format(Locale.US, "%1$02d:%2$02d.%3$01d", mm, ss, ms);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        db = AppDatabaseSingleton.getInstance(null);
         Bundle args = getArguments();
 
         if(args != null ){
@@ -73,9 +115,13 @@ public class TimeFragment extends Fragment {
         period = 100;
         // "00:00.0"
         zero = getString(R.string.zero);
-
         timerText = getActivity().findViewById(R.id.TimeText);
         timerText.setText(zero);
+        logText = getActivity().findViewById(R.id.LogText);
+        new DataStoreAsyncTask(db, getActivity(), logText,null).execute();
+
+
+
 
         Button startButton = getActivity().findViewById(R.id.StartButton);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -111,11 +157,16 @@ public class TimeFragment extends Fragment {
             public void onClick(View v) {
                 // timer がnullでない、起動しているときのみcancleする
                 if(null != timer){
+
+                    new DataStoreAsyncTask(db, getActivity(), logText,getTime(count)).execute();
+
                     // Cancel
                     timer.cancel();
                     timer = null;
                     timerText.setText(zero);
                     count = 0;
+
+
                 }
             }
         });
@@ -133,6 +184,10 @@ public class TimeFragment extends Fragment {
         });
         */
     }
+
+
+
+
     class CountUpTimerTask extends TimerTask {
         @Override
         public void run() {
@@ -140,15 +195,57 @@ public class TimeFragment extends Fragment {
             handler.post(new Runnable() {
                 public void run() {
                     count++;
-                    long mm = count*100 / 1000 / 60;
-                    long ss = count*100 / 1000 % 60;
-                    long ms = (count*100 - ss * 1000 - mm * 1000 * 60)/100;
                     // 桁数を合わせるために02d(2桁)を設定
-                    timerText.setText(
-                            String.format(Locale.US, "%1$02d:%2$02d.%3$01d", mm, ss, ms));
+                    timerText.setText(getTime(count));
+
 
                 }
             });
         }
     }
+    private static class DataStoreAsyncTask extends AsyncTask<Void, Void, Integer> {
+        private WeakReference<Activity> weakActivity;
+        private AppDatabase db;
+        private TextView textView;
+        private StringBuilder sb;
+        String s;
+
+
+        public DataStoreAsyncTask(AppDatabase db, Activity activity, TextView textView,String s) {
+            this.db = db;
+            weakActivity = new WeakReference<>(activity);
+            this.textView = textView;
+            this.s=s;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            LogDao logDao = db.LogDao();
+
+            if(s!=null){
+                logDao.insert(new Log(s));
+            }
+            sb = new StringBuilder();
+            List<Log> atList = logDao.getAll();
+            for (Log at: atList) {
+                sb.append(at.getLog()).append("\n");
+            }
+
+
+            return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer code) {
+            Activity activity = weakActivity.get();
+            if(activity == null) {
+                return;
+            }
+
+            textView.setText(sb.toString());
+
+        }
+    }
+
+
 }

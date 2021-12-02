@@ -12,6 +12,8 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.widget.Button;
+import com.example.koroboandroidapp.db.AppDatabaseSingleton;
+import com.example.koroboandroidapp.db.AppDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+        AppDatabase db = AppDatabaseSingleton.getInstance(getApplicationContext());
+
+
     }
 
 }
